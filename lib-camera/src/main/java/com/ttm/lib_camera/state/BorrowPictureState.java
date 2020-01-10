@@ -1,5 +1,6 @@
 package com.ttm.lib_camera.state;
 
+import android.graphics.Rect;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 
@@ -9,9 +10,9 @@ import com.ttm.lib_camera.util.LogUtil;
 
 
 /**
- *  * @author 陈嘉桐
- * @description
- * 拍照状态监听
+ * * @author 陈嘉桐
+ *
+ * @description 拍照状态监听
  */
 public class BorrowPictureState implements State {
     private final String TAG = "BorrowPictureState";

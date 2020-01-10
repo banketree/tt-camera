@@ -3,8 +3,8 @@ package com.ttm.lib_camera;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.hardware.Camera;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -47,8 +47,6 @@ import java.io.IOException;
  */
 public class JCameraView extends FrameLayout implements CameraInterface.CameraOpenOverCallback, SurfaceHolder
         .Callback, CameraView {
-//    private static final String TAG = "JCameraView";
-
     //Camera状态机
     private CameraMachine machine;
 
@@ -80,11 +78,6 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
     //两者都可以
     public static final int BUTTON_STATE_BOTH = 0x103;
 
-    public static final int RATIO_16_9 = 0;
-    public static final int RATIO_4_3 = 1;
-    public static final int RATIO_1_1 = 2;
-    public static final int RATIO_9_16 = 3;
-
     //回调监听
     private JCameraListener jCameraLisenter;
 
@@ -95,6 +88,7 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
     private ImageView mPhoto;
     private ImageView mSwitchCamera;
     private ImageView mFlashLamp;
+    private RatioVideoView mRatioView;
     private CaptureLayout mCaptureLayout;
     private FoucsView mFoucsView;
     private MediaPlayer mMediaPlayer;
@@ -111,8 +105,6 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
 
 
     //切换摄像头按钮的参数
-    //图标资源
-    private int iconSrc = 0;
     //录制时间
     private int duration = 0;
 
@@ -132,9 +124,11 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
 
     public JCameraView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init(context);
+    }
+
+    private void init(Context context) {
         mContext = context;
-        //get AttributeSet
-        iconSrc = R.drawable.camera_ic_camera;
         //没设置默认为60s
         duration = 60 * 1000;
         initData();
@@ -157,8 +151,8 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
         mRatioTv = view.findViewById(R.id.ratio_tv);
         mPhoto = view.findViewById(R.id.image_photo);
         mSwitchCamera = view.findViewById(R.id.image_switch);
-        mSwitchCamera.setImageResource(iconSrc);
         mFlashLamp = view.findViewById(R.id.image_flash);
+        mRatioView = view.findViewById(R.id.ratio_view);
         setFlashRes();
         mFlashLamp.setOnClickListener(new OnClickListener() {
             @Override
@@ -173,7 +167,7 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
         mCaptureLayout = (CaptureLayout) view.findViewById(R.id.capture_layout);
         mCaptureLayout.setDuration(duration);
         mFoucsView = (FoucsView) view.findViewById(R.id.fouce_view);
-        mVideoView.getHolder().addCallback(this);
+        mVideoView.getHolder().addCallback(this); //插入到视频中
         //切换摄像头
         mSwitchCamera.setOnClickListener(new OnClickListener() {
             @Override
@@ -188,6 +182,8 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
                 mSwitchCamera.setVisibility(INVISIBLE);
                 mFlashLamp.setVisibility(INVISIBLE);
                 mBackImg.setVisibility(INVISIBLE);
+                mRatioTv.setVisibility(INVISIBLE);
+
                 machine.capture();
             }
 
@@ -196,6 +192,7 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
                 mSwitchCamera.setVisibility(INVISIBLE);
                 mFlashLamp.setVisibility(INVISIBLE);
                 mBackImg.setVisibility(INVISIBLE);
+                mRatioTv.setVisibility(INVISIBLE);
                 machine.record(mVideoView.getHolder().getSurface(), screenProp);
             }
 
@@ -205,6 +202,7 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
                 mSwitchCamera.setVisibility(VISIBLE);
                 mFlashLamp.setVisibility(VISIBLE);
                 mBackImg.setVisibility(VISIBLE);
+                mRatioTv.setVisibility(VISIBLE);
                 postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -244,30 +242,21 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
             }
         });
 
-        mBackImg.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (jCameraLisenter != null) jCameraLisenter.quit();
-            }
+        mBackImg.setOnClickListener(v -> {
+            if (jCameraLisenter != null) jCameraLisenter.quit();
         });
 
-        mRatioTv.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int radioType = getRatioType();
-                if (radioType == RATIO_16_9) {
-                    mRatioTv.setTag(RATIO_4_3);
-                    mRatioTv.setText("4:3");
-                } else if (radioType == RATIO_4_3) {
-                    mRatioTv.setTag(RATIO_1_1);
-                    mRatioTv.setText("1:1");
-                } else if (radioType == RATIO_1_1) {
-                    mRatioTv.setTag(RATIO_9_16);
-                    mRatioTv.setText("9:16");
-                } else if (radioType == RATIO_9_16) {
-                    mRatioTv.setTag(RATIO_16_9);
-                    mRatioTv.setText("16:9");
-                }
+        mRatioTv.setOnClickListener(v -> {
+            int radioType = getRatioType();
+            if (radioType == RatioVideoView.RATIO_16_9) {
+                mRatioView.setRadioType(RatioVideoView.RATIO_4_3);
+                mRatioTv.setText("4:3");
+            } else if (radioType == RatioVideoView.RATIO_4_3) {
+                mRatioView.setRadioType(RatioVideoView.RATIO_1_1);
+                mRatioTv.setText("1:1");
+            } else if (radioType == RatioVideoView.RATIO_1_1) {
+                mRatioView.setRadioType(RatioVideoView.RATIO_16_9);
+                mRatioTv.setText("16:9");
             }
         });
     }
@@ -458,6 +447,8 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
         }
         mSwitchCamera.setVisibility(VISIBLE);
         mFlashLamp.setVisibility(VISIBLE);
+        mBackImg.setVisibility(VISIBLE);
+        mRatioTv.setVisibility(VISIBLE);
         mCaptureLayout.resetCaptureLayout();
     }
 
@@ -476,6 +467,10 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
             case TYPE_PICTURE: {
                 mPhoto.setVisibility(INVISIBLE);
                 if (jCameraLisenter != null) {
+                    Rect frameRect = mRatioView.getRatioAreaRect(CameraInterface.getInstance().getPreviewWidth(), CameraInterface.getInstance().getPreviewHeight());
+                    if (frameRect != null) {
+                        captureBitmap = Bitmap.createBitmap(captureBitmap, frameRect.left, frameRect.top, frameRect.width(), frameRect.height());
+                    }
                     jCameraLisenter.captureSuccess(captureBitmap);
                 }
             }
@@ -617,6 +612,6 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
     }
 
     public int getRatioType() {
-        return mRatioTv.getTag() == null ? RATIO_16_9 : (int) mRatioTv.getTag();
+        return mRatioView.getRadioType();
     }
 }

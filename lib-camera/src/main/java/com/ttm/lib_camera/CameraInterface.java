@@ -129,9 +129,9 @@ public class CameraInterface implements Camera.PreviewCallback {
             if (Sensor.TYPE_ACCELEROMETER != event.sensor.getType()) {
                 return;
             }
-            float[] values = event.values;
-            angle = AngleUtil.getSensorAngle(values[0], values[1]);
-            rotationAnimation();
+//            float[] values = event.values;
+//            angle = AngleUtil.getSensorAngle(values[0], values[1]);
+//            rotationAnimation();
         }
 
         @Override
@@ -371,6 +371,7 @@ public class CameraInterface implements Camera.PreviewCallback {
         if (holder == null) {
             return;
         }
+
         this.mHolder = holder;
         if (mCamera != null) {
             try {
@@ -542,7 +543,6 @@ public class CameraInterface implements Camera.PreviewCallback {
         mediaRecorder.reset();
         mediaRecorder.setCamera(mCamera);
         mediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
-
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
@@ -785,5 +785,14 @@ public class CameraInterface implements Camera.PreviewCallback {
 
     void isPreview(boolean res) {
         this.isPreviewing = res;
+    }
+
+
+    public int getPreviewWidth() {
+        return preview_width;
+    }
+
+    public int getPreviewHeight() {
+        return preview_height;
     }
 }

@@ -13,6 +13,8 @@ import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_camera.*
+import java.io.FileOutputStream
+import java.lang.Exception
 
 
 /**
@@ -77,6 +79,11 @@ class TakeCameraActivity : AppCompatActivity() {
             override fun captureSuccess(bitmap: Bitmap) {
                 //获取图片bitmap
 //                Log.i("JCameraView", "bitmap = " + bitmap.width)
+                saveBitmap(
+                    bitmap,
+                    Environment.getExternalStorageDirectory().path + File.separator + "Camera" + File.separator + "${System.currentTimeMillis()}.jpg"
+                )
+                finish()
             }
 
             override fun recordSuccess(url: String, firstFrame: Bitmap) {
@@ -87,6 +94,27 @@ class TakeCameraActivity : AppCompatActivity() {
                 finish()
             }
         })
+    }
+
+    /**
+     * 保存bitmap到本地
+     *
+     * @param bitmap Bitmap
+     */
+    fun saveBitmap(bitmap: Bitmap, path: String) {
+        try {
+            var file: File = File(path)
+            if (!file.exists()) {
+                file.parentFile.mkdirs()
+                file.createNewFile()
+            }
+
+            val fos: FileOutputStream = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+            fos.flush()
+            fos.close()
+        } catch (ex: Exception) {
+        }
     }
 
     /**

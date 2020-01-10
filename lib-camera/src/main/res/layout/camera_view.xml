@@ -18,8 +18,14 @@
             android:id="@+id/image_photo"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#000"
+            android:background="#000000"
             android:visibility="invisible" />
+
+        <com.ttm.lib_camera.RatioVideoView
+            android:id="@+id/ratio_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
     </FrameLayout>
 
 
@@ -45,10 +51,10 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_margin="16dp"
-            android:gravity="center"
             android:background="@drawable/camera_shape_white_5"
-            android:textColor="@android:color/white"
-            android:text="16:9" />
+            android:gravity="center"
+            android:text="16:9"
+            android:textColor="@android:color/white" />
 
         <ImageView
             android:id="@+id/image_flash"
@@ -63,7 +69,6 @@
             android:layout_height="30dp"
             android:layout_margin="16dp"
             android:src="@drawable/camera_ic_camera" />
-
     </LinearLayout>
 
 

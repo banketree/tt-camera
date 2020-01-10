@@ -1,5 +1,6 @@
 package com.ttm.lib_camera.state
 
+import android.graphics.Rect
 import android.view.Surface
 import android.view.SurfaceHolder
 
