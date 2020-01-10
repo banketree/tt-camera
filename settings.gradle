@@ -1,0 +1,2 @@
+include ':app', ':lib-camera', ':component-camera'
+rootProject.name='tt-camera'

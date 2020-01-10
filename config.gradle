@@ -1,0 +1,46 @@
+//第三方依赖库和版本号管理
+ext {
+    android = [compileSdkVersion: 29,
+               buildToolsVersion: '29.0.2',
+               minSdkVersion    : 16,
+               targetSdkVersion : 29,
+               versionCode      : 001,
+               versionName      : '0.0.1',
+               multiDexEnabled  : true]
+
+    signConfigs = ['storeFile'    : 'sign.jks',
+                   'storePassword': '123456',
+                   'keyAlias'     : 'sign',
+                   'keyPassword'  : '123456']
+
+    java = ['javaVersion': JavaVersion.VERSION_1_8]
+
+    dependence = [
+            //kotlin
+            "kotlin-stdlib-jdk7"        : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.31",
+            "core-ktx"                  : "androidx.core:core-ktx:1.1.0",
+            //协程
+            "kotlinx-coroutines-core"   : "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1",
+            "kotlinx-coroutines-android" : "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1",
+            "lifecycle-viewmodel-ktx"   : "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0-alpha01",
+
+            //ui
+            "appcompat"                 : "androidx.appcompat:appcompat:1.1.0",
+            "annotation"                 : "androidx.annotation:annotation:1.1.0",
+            "constraintlayout"          : "androidx.constraintlayout:constraintlayout:1.1.3",
+            "material"                  : "com.google.android.material:material:1.0.0-alpha1",
+            "autolayout"                : "com.zhy:autolayout:1.4.5",
+            "butterknife"               : "com.jakewharton:butterknife:9.0.0",
+            "butterknife-compiler"      : "com.jakewharton:butterknife-compiler:9.0.0",
+            "pickerview"                : "com.contrarywind:Android-PickerView:3.2.5",
+            "photoview"                 : "com.github.chrisbanes.photoview:library:1.2.3",
+            "numberprogressbar"         : "com.daimajia.numberprogressbar:library:1.2@aar",
+            "nineoldandroids"           : "com.nineoldandroids:library:2.4.0",
+            "paginate"                  : "com.github.markomilos:paginate:0.5.1",
+            "vlayout"                   : "com.alibaba.android:vlayout:1.1.0@aar",
+            "viewpager2"                : "androidx.viewpager2:viewpager2:1.0.0-alpha01",
+
+            //player
+            "ijkplayer-java"            : "tv.danmaku.ijk.media:ijkplayer-java:0.8.8",
+    ]
+}
