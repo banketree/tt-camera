@@ -1,12 +1,7 @@
 package com.ttm.lib_camera.util;
 
 /**
- * =====================================
- * 作    者: 陈嘉桐
- * 版    本：1.1.4
- * 创建日期：2017/5/2
- * 描    述：
- * =====================================
+ * @description 角度辅助
  */
 public class AngleUtil {
     public static int getSensorAngle(float x, float y) {

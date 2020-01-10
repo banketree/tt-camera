@@ -10,13 +10,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+
 /**
- * =====================================
- * 作    者: 陈嘉桐
- * 版    本：1.1.4
- * 创建日期：2017/4/25
- * 描    述：
- * =====================================
+ * @description 采集参数
  */
 public class CameraParamUtil {
     private static final String TAG = "JCameraView";
@@ -145,11 +141,14 @@ public class CameraParamUtil {
             case Surface.ROTATION_270:
                 degrees = 270;
                 break;
+            default:
+                break;
         }
         int result;
         if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
             result = (info.orientation + degrees) % 360;
-            result = (360 - result) % 360;   // compensate the mirror
+            // compensate the mirror
+            result = (360 - result) % 360;
         } else {
             // back-facing
             result = (info.orientation - degrees + 360) % 360;

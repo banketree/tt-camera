@@ -41,6 +41,6 @@ dependencies {
     implementation dependence['appcompat']
     implementation dependence['core-ktx']
     implementation dependence['constraintlayout']
-    implementation project(path: ':component-camera')
+    implementation project(path: ':lib-camera')
 
 }

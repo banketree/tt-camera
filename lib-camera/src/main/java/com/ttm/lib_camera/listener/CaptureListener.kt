@@ -1,5 +1,10 @@
 package com.ttm.lib_camera.listener
 
+/**
+ *  * @author 陈嘉桐
+ * @description
+ * 拍照回调
+ */
 interface CaptureListener {
     fun takePictures()
 

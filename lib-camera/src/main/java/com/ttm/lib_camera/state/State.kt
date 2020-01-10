@@ -5,7 +5,11 @@ import android.view.SurfaceHolder
 
 import com.ttm.lib_camera.CameraInterface
 
-
+/**
+ * @author 陈嘉桐
+ * @description
+ * 状态
+ */
 interface State {
 
     fun start(holder: SurfaceHolder, screenProp: Float)

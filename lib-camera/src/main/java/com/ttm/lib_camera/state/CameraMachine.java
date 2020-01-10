@@ -9,24 +9,21 @@ import com.ttm.lib_camera.view.CameraView;
 
 
 /**
- * =====================================
- * 作    者: 陈嘉桐
- * 版    本：1.1.4
- * 创建日期：2017/9/8
- * 描    述：
- * =====================================
+ * @author 陈嘉桐
+ * @description
  */
 public class CameraMachine implements State {
-
-
     private Context context;
     private State state;
     private CameraView view;
 //    private CameraInterface.CameraOpenOverCallback cameraOpenOverCallback;
 
-    private State previewState;       //浏览状态(空闲)
-    private State borrowPictureState; //浏览图片
-    private State borrowVideoState;   //浏览视频
+    //浏览状态(空闲)
+    private State previewState;
+    //浏览图片
+    private State borrowPictureState;
+    //浏览视频
+    private State borrowVideoState;
 
     public CameraMachine(Context context, CameraView view, CameraInterface.CameraOpenOverCallback
             cameraOpenOverCallback) {

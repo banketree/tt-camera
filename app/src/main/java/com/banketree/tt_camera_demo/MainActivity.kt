@@ -3,7 +3,6 @@ package com.banketree.tt_camera_demo
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.ttm.ttcamera.ui.TakeCameraActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {

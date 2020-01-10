@@ -312,7 +312,8 @@ public class CameraInterface implements Camera.PreviewCallback {
 
     private void setFlashModel() {
         mParams = mCamera.getParameters();
-        mParams.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH); //设置camera参数为Torch模式
+        //设置camera参数为Torch模式
+        mParams.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
         mCamera.setParameters(mParams);
     }
 

@@ -9,12 +9,8 @@ import com.ttm.lib_camera.JCameraView;
 import com.ttm.lib_camera.util.LogUtil;
 
 /**
- * =====================================
- * 作    者: 陈嘉桐
- * 版    本：1.1.4
- * 创建日期：2017/9/8
- * 描    述：空闲状态
- * =====================================
+ * @author 陈嘉桐
+ * @description 预览状态
  */
 class PreviewState implements State {
     public static final String TAG = "PreviewState";

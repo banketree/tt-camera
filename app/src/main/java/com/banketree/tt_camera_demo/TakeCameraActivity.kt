@@ -1,10 +1,8 @@
-package com.ttm.ttcamera.ui
+package com.banketree.tt_camera_demo
 
 import android.Manifest
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.ttm.ttcamera.R
-import kotlinx.android.synthetic.main.camera_activity_take_camera.*
 import android.graphics.Bitmap
 import android.os.Environment
 import com.ttm.lib_camera.listener.JCameraListener
@@ -14,6 +12,7 @@ import android.view.View
 import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
 import android.widget.Toast
+import kotlinx.android.synthetic.main.activity_camera.*
 
 
 /**
@@ -28,7 +27,7 @@ class TakeCameraActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         //全屏显示
         initFullScreen()
-        setContentView(R.layout.camera_activity_take_camera)
+        setContentView(R.layout.activity_camera)
         initView()
     }
 
@@ -58,7 +57,7 @@ class TakeCameraActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         if (!isPermissionsOK()) { //请确认权限是否开启
-            Toast.makeText(this, R.string.camera_permissions_error_camera, Toast.LENGTH_SHORT)
+            Toast.makeText(this, "权限失败", Toast.LENGTH_SHORT)
                 .show()
             return
         }

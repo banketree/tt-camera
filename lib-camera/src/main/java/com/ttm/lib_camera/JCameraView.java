@@ -28,7 +28,6 @@ import com.ttm.lib_camera.listener.CaptureListener;
 import com.ttm.lib_camera.listener.ClickListener;
 import com.ttm.lib_camera.listener.ErrorListener;
 import com.ttm.lib_camera.listener.JCameraListener;
-import com.ttm.lib_camera.listener.ReturnListener;
 import com.ttm.lib_camera.listener.TypeListener;
 import com.ttm.lib_camera.state.CameraMachine;
 import com.ttm.lib_camera.util.FileUtil;
@@ -75,7 +74,6 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
     public static final int MEDIA_QUALITY_DESPAIR = 2 * 100000;
     public static final int MEDIA_QUALITY_SORRY = 1 * 80000;
 
-
     //只能拍照
     public static final int BUTTON_STATE_ONLY_CAPTURE = 0x101;
     //只能录像
@@ -86,8 +84,6 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
 
     //回调监听
     private JCameraListener jCameraLisenter;
-    private ClickListener leftClickListener;
-    private ClickListener rightClickListener;
 
     private Context mContext;
     private VideoView mVideoView;
@@ -110,16 +106,8 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
 
 
     //切换摄像头按钮的参数
-    //图标大小
-    private int iconSize = 0;
-    //右上边距
-    private int iconMargin = 0;
     //图标资源
     private int iconSrc = 0;
-    //左图标
-    private int iconLeft = 0;
-    //右图标
-    private int iconRight = 0;
     //录制时间
     private int duration = 0;
 
@@ -142,15 +130,9 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
         mContext = context;
         //get AttributeSet
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.JCameraView, defStyleAttr, 0);
-        iconSize = a.getDimensionPixelSize(R.styleable.JCameraView_iconSize, (int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_SP, 35, getResources().getDisplayMetrics()));
-        iconMargin = a.getDimensionPixelSize(R.styleable.JCameraView_iconMargin, (int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_SP, 15, getResources().getDisplayMetrics()));
         iconSrc = a.getResourceId(R.styleable.JCameraView_iconSrc, R.drawable.ic_camera);
-        iconLeft = a.getResourceId(R.styleable.JCameraView_iconLeft, 0);
-        iconRight = a.getResourceId(R.styleable.JCameraView_iconRight, 0);
-        //没设置默认为10s
-        duration = a.getInteger(R.styleable.JCameraView_duration_max, 10 * 1000);
+        //没设置默认为60s
+        duration = a.getInteger(R.styleable.JCameraView_duration_max, 60 * 1000);
         a.recycle();
         initData();
         initView();
@@ -185,7 +167,6 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
         });
         mCaptureLayout = (CaptureLayout) view.findViewById(R.id.capture_layout);
         mCaptureLayout.setDuration(duration);
-        mCaptureLayout.setIconSrc(iconLeft, iconRight);
         mFoucsView = (FoucsView) view.findViewById(R.id.fouce_view);
         mVideoView.getHolder().addCallback(this);
         //切换摄像头
@@ -252,31 +233,6 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
             @Override
             public void confirm() {
                 machine.confirm();
-            }
-        });
-        //退出
-        mCaptureLayout.setReturnLisenter(new ReturnListener() {
-            @Override
-            public void onReturn() {
-                if (jCameraLisenter != null) {
-                    jCameraLisenter.quit();
-                }
-            }
-        });
-        mCaptureLayout.setLeftClickListener(new ClickListener() {
-            @Override
-            public void onClick() {
-                if (leftClickListener != null) {
-                    leftClickListener.onClick();
-                }
-            }
-        });
-        mCaptureLayout.setRightClickListener(new ClickListener() {
-            @Override
-            public void onClick() {
-                if (rightClickListener != null) {
-                    rightClickListener.onClick();
-                }
             }
         });
     }
@@ -603,14 +559,6 @@ public class JCameraView extends FrameLayout implements CameraInterface.CameraOp
         animSet.setDuration(400);
         animSet.start();
         return true;
-    }
-
-    public void setLeftClickListener(ClickListener clickListener) {
-        this.leftClickListener = clickListener;
-    }
-
-    public void setRightClickListener(ClickListener clickListener) {
-        this.rightClickListener = clickListener;
     }
 
     private void setFlashRes() {

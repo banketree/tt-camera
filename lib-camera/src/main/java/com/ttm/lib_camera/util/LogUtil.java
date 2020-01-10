@@ -4,13 +4,11 @@ import android.util.Log;
 
 import static com.ttm.lib_camera.BuildConfig.DEBUG;
 
+
 /**
- * =====================================
- * 作    者: 陈嘉桐
- * 版    本：1.1.4
- * 创建日期：2017/9/7
- * 描    述：
- * =====================================
+ * @author
+ * @description
+ * 日志
  */
 public class LogUtil {
 

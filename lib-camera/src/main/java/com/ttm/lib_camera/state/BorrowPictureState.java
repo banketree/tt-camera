@@ -9,12 +9,9 @@ import com.ttm.lib_camera.util.LogUtil;
 
 
 /**
- * =====================================
- * 作    者: 陈嘉桐
- * 版    本：1.1.4
- * 创建日期：2017/9/8
- * 描    述：
- * =====================================
+ *  * @author 陈嘉桐
+ * @description
+ * 拍照状态监听
  */
 public class BorrowPictureState implements State {
     private final String TAG = "BorrowPictureState";
@@ -56,7 +53,7 @@ public class BorrowPictureState implements State {
     }
 
     @Override
-    public void record(Surface surface,float screenProp) {
+    public void record(Surface surface, float screenProp) {
 
     }
 

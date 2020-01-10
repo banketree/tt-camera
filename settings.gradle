@@ -1,2 +1,2 @@
-include ':app', ':lib-camera', ':component-camera'
+include ':app', ':lib-camera'
 rootProject.name='tt-camera'
