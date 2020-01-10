@@ -29,6 +29,7 @@
             android:name=".TakeCameraActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:windowSoftInputMode="stateHidden|stateUnchanged|adjustPan" />
     </application>
 
