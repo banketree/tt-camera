@@ -80,39 +80,36 @@ jint Java_com_miracles_codec_camera_LibYuvUtils_scaleRotationAndMirrorToI420
                                                                                 &isCopy));
     //temp-src-buf
     jint tempCropWidth = jCropWidth;//
-    uint8_t *temp_src_buf = new uint8_t[tempCropWidth * jSrcHeight * 3 / 2];
+    jint tempCropHeight = jCropHeight;//
+    uint8_t *temp_src_buf = new uint8_t[tempCropWidth * tempCropHeight * 3 / 2];
     uint8_t *temp_src_y = temp_src_buf;
-    uint8_t *temp_src_u = temp_src_y + tempCropWidth * jSrcHeight;
-    uint8_t *temp_src_v = temp_src_u + tempCropWidth * jSrcHeight / 4;
+    uint8_t *temp_src_u = temp_src_y + tempCropWidth * tempCropHeight;
+    uint8_t *temp_src_v = temp_src_u + tempCropWidth * tempCropHeight / 4;
 
     //convert info
     jint yStride = tempCropWidth;
-    jint cropX = jCropX;
-    jint cropY = jCropY;
-    jint cropWidth = jCropWidth;
-    jint cropHeight = jCropHeight;
 
     libyuv::RotationMode mode = ToRotationMode(jRotation);
     if (mode == libyuv::kRotate90 || mode == libyuv::kRotate270) {
-        yStride = jSrcHeight;
+        yStride = tempCropHeight;
     }
     jint uStride = yStride / 2, vStride = yStride / 2;
     //ConvertToI420
     jint res = libyuv::ConvertToI420(sample_buf, static_cast<size_t>(jSampleSize), temp_src_y,
                                      yStride, temp_src_u, uStride, temp_src_v,
-                                     vStride, cropX, cropY, jSrcWidth, jSrcHeight, tempCropWidth,
-                                     jSrcHeight, mode, static_cast<uint32_t>(jFormat));
+                                     vStride, jCropX, jCropY, jSrcWidth, jSrcHeight, tempCropWidth,
+                                     tempCropHeight, mode, static_cast<uint32_t>(jFormat));
 
 
     //convert info
     jint convertDstWidth = tempCropWidth;//输出的宽
-    jint convertDstHeight = jSrcHeight; //输出的高
+    jint convertDstHeight = tempCropHeight; //输出的高
     jint scaleWidth = jScaleWidth;  //旋转后的宽
     jint scaleHeight = jScaleHeight; //旋转后的高
     jint scaleYStride = jScaleWidth; //旋转后的Y
     if (mode == libyuv::kRotate90 || mode == libyuv::kRotate270) {
         scaleYStride = jScaleHeight;
-        convertDstWidth = jSrcHeight;
+        convertDstWidth = tempCropHeight;
         convertDstHeight = tempCropWidth;
         scaleWidth = jScaleHeight;
         scaleHeight = jScaleWidth;
