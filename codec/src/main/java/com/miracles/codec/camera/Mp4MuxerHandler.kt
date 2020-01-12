@@ -156,7 +156,8 @@ abstract class Mp4MuxerHandler : AudioDevice.Callback, CameraView.Callback {
         var resultBf = mCompressedFrameBytesPool.getBytes()
         val rotation = LibYuvUtils.ROTATION_90 * orientation / 90
 
-        val frameRect = Rect(0,100, width,height-300)
+        //标准 横屏
+        val frameRect = Rect(50,0, width-50,height)
 
 
         val res = LibYuvUtils.scaleRotationAndMirrorToI420(data, len, resultBf, width, height,

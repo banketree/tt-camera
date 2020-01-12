@@ -79,13 +79,19 @@ jint Java_com_miracles_codec_camera_LibYuvUtils_scaleRotationAndMirrorToI420
     uint8_t *result_buf = reinterpret_cast<uint8_t *>(env->GetByteArrayElements(jResultBuf,
                                                                                 &isCopy));
     //temp-src-buf
-    jint tempCropWidth = (jSrcWidth-50);
+    jint tempCropWidth = jCropWidth;//
     uint8_t *temp_src_buf = new uint8_t[tempCropWidth * jSrcHeight * 3 / 2];
     uint8_t *temp_src_y = temp_src_buf;
     uint8_t *temp_src_u = temp_src_y + tempCropWidth * jSrcHeight;
     uint8_t *temp_src_v = temp_src_u + tempCropWidth * jSrcHeight / 4;
+
     //convert info
     jint yStride = tempCropWidth;
+    jint cropX = jCropX;
+    jint cropY = jCropY;
+    jint cropWidth = jCropWidth;
+    jint cropHeight = jCropHeight;
+
     libyuv::RotationMode mode = ToRotationMode(jRotation);
     if (mode == libyuv::kRotate90 || mode == libyuv::kRotate270) {
         yStride = jSrcHeight;
@@ -94,7 +100,7 @@ jint Java_com_miracles_codec_camera_LibYuvUtils_scaleRotationAndMirrorToI420
     //ConvertToI420
     jint res = libyuv::ConvertToI420(sample_buf, static_cast<size_t>(jSampleSize), temp_src_y,
                                      yStride, temp_src_u, uStride, temp_src_v,
-                                     vStride, 50, 0, jSrcWidth, jSrcHeight, tempCropWidth,
+                                     vStride, cropX, cropY, jSrcWidth, jSrcHeight, tempCropWidth,
                                      jSrcHeight, mode, static_cast<uint32_t>(jFormat));
 
 
