@@ -5,12 +5,18 @@ master 分支用于 功能测试
 
 后面会在分支上 实现引用依赖库
 
-![Image text](https://raw.github.com/banketree/tt-camera/blob/master/screenShot/1.jpg)
-![Image text](https://raw.github.com/banketree/tt-camera/blob/master/screenShot/2.jpg)
-![Image text](https://raw.github.com/banketree/tt-camera/blob/master/screenShot/3.jpg)
-![Image text](https://raw.github.com/banketree/tt-camera/blob/master/screenShot/4.jpg)
-![Image text](https://raw.github.com/banketree/tt-camera/blob/master/screenShot/5.jpg)
+![Image text](https://github.com/banketree/tt-camera/blob/master/screenShot/1.jpg)
+
+![Image text](https://github.com/banketree/tt-camera/blob/master/screenShot/2.jpg)
+
+![Image text](https://github.com/banketree/tt-camera/blob/master/screenShot/3.jpg)
+
+![Image text](https://github.com/banketree/tt-camera/blob/master/screenShot/4.jpg)
+
+![Image text](https://github.com/banketree/tt-camera/blob/master/screenShot/5.jpg)
+
 
 感谢开源：
-https://github.com/CJT2325/CameraView
-https://github.com/banketree/Camera-Muxer
+
+    https://github.com/CJT2325/CameraView
+    https://github.com/banketree/Camera-Muxer
