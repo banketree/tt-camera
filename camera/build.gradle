@@ -1,6 +1,8 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+
+group = 'com.github.banketree'
 
 def androidConfig = rootProject.ext.android
 def dependence = rootProject.ext.dependence
@@ -8,13 +10,16 @@ def dependence = rootProject.ext.dependence
 android {
     compileSdkVersion androidConfig.compileSdkVersion
     buildToolsVersion androidConfig.buildToolsVersion
+
     defaultConfig {
-        applicationId "com.banketree.tt_camera_demo"
         minSdkVersion androidConfig.minSdkVersion
         targetSdkVersion androidConfig.targetSdkVersion
         versionCode 1
         versionName "1.0"
+
+        consumerProguardFiles 'consumer-rules.pro'
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -38,15 +43,6 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation dependence['kotlin-stdlib-jdk7']
-    implementation dependence['appcompat']
     implementation dependence['core-ktx']
-    implementation dependence['constraintlayout']
-    //glide
-    implementation dependence["glide"]
-    annotationProcessor dependence["glide-compiler"]
-    implementation project(path: ':lib-camera')
-
-    implementation project(':mp4-codec')
-    implementation 'com.yqritc:android-scalablevideoview:1.0.4'
-    implementation 'com.github.chrisbanes:PhotoView:2.0.0'
+    implementation dependence['appcompat']
 }

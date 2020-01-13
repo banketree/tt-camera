@@ -1,10 +1,12 @@
 package com.banketree.tt_camera_demo.yuv
 
 import android.content.Context
+import android.graphics.Rect
 import android.os.Bundle
 import android.os.Environment
 import android.os.Parcel
 import android.os.Parcelable
+import android.util.Log
 import com.banketree.tt_camera_demo.R
 import com.miracles.camera.*
 import com.miracles.codec.camera.AudioDevice
@@ -37,7 +39,6 @@ class CameraActivity : BaseActivity() {
     }
 
     private fun initCameraView() {
-        val picturePath = File(getSavedDir(), "me.jpeg").absolutePath
         //record preview size
         //cameraView.setCameraSizeStrategy(CameraFunctions.STRATEGY_RECORD_PREVIEW_SIZE, getRecordStrategy())
         //mp4Callback
@@ -49,7 +50,8 @@ class CameraActivity : BaseActivity() {
             }
         })
         //picture callback
-        cameraView.addCallback(object : CapturePictureHandler(picturePath) {
+        cameraView.addCallback(object :
+            CapturePictureHandler(getSavedDir().absolutePath + File.separator) {
             override fun onPictureCapturedResult(
                 cameraView: CameraView,
                 path: String,
@@ -62,6 +64,11 @@ class CameraActivity : BaseActivity() {
                 } else {
                     PreviewActivity.start(this@CameraActivity, path, true)
                 }
+            }
+
+            override fun getCropRect(width: Int, height: Int): Rect {
+                val rect = ratioView.getRatioAreaRect(width, height)  //默认竖屏
+                return rect
             }
         })
 

@@ -144,7 +144,7 @@ class RatioView : View {
         postInvalidate()
     }
 
-    private fun getRatioAreaRect(previewHeight: Int): Rect? {
+    private fun getRatioAreaRect(previewHeight: Int): Rect {
         val rect = Rect(framingRect)
         var ratio = 1.0f * previewHeight / measuredHeight
         if (ratio > 1) ratio = 1.0f
@@ -155,18 +155,16 @@ class RatioView : View {
         return rect
     }
 
-    fun getRatioAreaRect(preViewWidth: Int, preViewHeight: Int): Rect? {
+    fun getRatioAreaRect(preViewWidth: Int, preViewHeight: Int): Rect {
         var width = preViewWidth
         var height = preViewHeight
 
         val manager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val outMetrics = DisplayMetrics()
         manager.defaultDisplay.getMetrics(outMetrics)
-
         if (this.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) { //竖屏
-            val tmp = width
-            width = height
-            height = tmp
+            width = preViewHeight
+            height = preViewWidth
         }
 
         if (framingRect == null) { //如果为空 则取16:9 全部
