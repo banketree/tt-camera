@@ -3,6 +3,7 @@ package com.banketree.tt_camera_demo
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.banketree.tt_camera_demo.yuv.CameraActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -13,5 +14,12 @@ class MainActivity : AppCompatActivity() {
         test_tv.setOnClickListener {
             startActivity(Intent(this, TakeCameraActivity::class.java))
         }
+        test_two.setOnClickListener {
+            startActivity(Intent(this, CameraActivity::class.java))
+        }
+
+//        progress_circular.setOnClickListener {
+//
+//        }
     }
 }

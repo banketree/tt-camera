@@ -41,6 +41,12 @@ dependencies {
     implementation dependence['appcompat']
     implementation dependence['core-ktx']
     implementation dependence['constraintlayout']
+    //glide
+    implementation dependence["glide"]
+    annotationProcessor dependence["glide-compiler"]
     implementation project(path: ':lib-camera')
 
+    implementation project(':mp4-codec')
+    implementation 'com.yqritc:android-scalablevideoview:1.0.4'
+    implementation 'com.github.chrisbanes:PhotoView:2.0.0'
 }
