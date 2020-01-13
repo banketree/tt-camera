@@ -2,10 +2,7 @@ package com.banketree.tt_camera_demo.yuv
 
 import android.content.Context
 import android.graphics.Rect
-import android.os.Bundle
-import android.os.Environment
-import android.os.Parcel
-import android.os.Parcelable
+import android.os.*
 import android.util.Log
 import com.banketree.tt_camera_demo.R
 import com.miracles.camera.*
@@ -20,7 +17,9 @@ import java.io.File
 /**
  * Created by lxw
  */
+@Suppress("DEPRECATION")
 class CameraActivity : BaseActivity() {
+    private val baseActivity: BaseActivity by lazy { this }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.yuv_activity_camera)
@@ -28,7 +27,7 @@ class CameraActivity : BaseActivity() {
     }
 
     private fun getSavedDir(): File {
-        val dir = File(Environment.getExternalStorageDirectory(), "camera&muxer")
+        val dir = File(Environment.getExternalStorageDirectory(), "camera&Test")
         if (!dir.exists()) dir.mkdirs()
         return dir
     }
@@ -38,17 +37,76 @@ class CameraActivity : BaseActivity() {
         initControlView()
     }
 
-    private fun initCameraView() {
+    private var mmP4MuxerHandler: MMP4MuxerHandler? = null
+    private fun initVideoCamera() {
         //record preview size
         //cameraView.setCameraSizeStrategy(CameraFunctions.STRATEGY_RECORD_PREVIEW_SIZE, getRecordStrategy())
         //mp4Callback
-        cameraView.addCallback(object : MMP4MuxerHandler(this@CameraActivity, getSavedDir()) {
+        mmP4MuxerHandler?.let {
+            cameraView.removeCallback(it)
+        }
+        mmP4MuxerHandler = null
+        mmP4MuxerHandler = object : MMP4MuxerHandler(this@CameraActivity, getSavedDir()) {
+            override fun createMp4Muxer(frameWidth: Int, frameHeight: Int): Mp4Muxer {
+                var framingRect = getRatioAreaRect(frameWidth, frameHeight)
+                return super.createMp4Muxer(framingRect.width(), framingRect.height())
+            }
+
             override fun onStopRecordingFrame(cameraView: CameraView, timeStampInNs: Long) {
                 super.onStopRecordingFrame(cameraView, timeStampInNs)
-                PreviewActivity.start(this@CameraActivity, mMp4Path, false)
+                if (timeStampInNs >= 1000)
+                    PreviewActivity.start(this@CameraActivity, mMp4Path, false)
                 cameraControlView.resetState()
             }
-        })
+
+            private fun getRatioAreaRect(width: Int, height: Int): Rect {
+                var framingRect = ratioView.getRatioAreaRect(width, height)  //内部有旋转竖屏
+                if (ratioView.isOrientationPortrait()) {
+                    framingRect = Rect(
+                        framingRect.top,
+                        framingRect.left,
+                        framingRect.bottom,
+                        framingRect.right
+                    ) //倒过来
+                }
+                Log.i(
+                    "",
+                    "$framingRect +  height:${framingRect.height()}+  width:${framingRect.width()}"
+                )
+                return framingRect
+//                return Rect(160, 0,1120, height)
+            }
+
+            override fun onFrameRecording(
+                cameraView: CameraView,
+                frameBytes: CameraView.FrameBytes,
+                width: Int,
+                height: Int,
+                format: Int,
+                orientation: Int,
+                facing: Int,
+                timeStampInNs: Long,
+                cropRect: Rect
+            ) {
+                var framingRect = getRatioAreaRect(width, height)
+                super.onFrameRecording(
+                    cameraView,
+                    frameBytes,
+                    width,
+                    height,
+                    format,
+                    orientation,
+                    facing,
+                    timeStampInNs,
+                    framingRect
+                )
+            }
+        }
+        cameraView.addCallback(mmP4MuxerHandler!!)
+    }
+
+    private fun initCameraView() {
+        initVideoCamera()
         //picture callback
         cameraView.addCallback(object :
             CapturePictureHandler(getSavedDir().absolutePath + File.separator) {
@@ -67,8 +125,7 @@ class CameraActivity : BaseActivity() {
             }
 
             override fun getCropRect(width: Int, height: Int): Rect {
-                val rect = ratioView.getRatioAreaRect(width, height)  //默认竖屏
-                return rect
+                return ratioView.getRatioAreaRect(width, height)
             }
         })
 
@@ -87,6 +144,7 @@ class CameraActivity : BaseActivity() {
             }
 
             override fun onError(error: String) {
+                cameraView.stopRecord()
             }
         })
     }
@@ -208,11 +266,11 @@ class CameraActivity : BaseActivity() {
      */
     private open class MMP4MuxerHandler(val ctx: Context, val dir: File) : Mp4MuxerHandler() {
         override fun createMp4Muxer(frameWidth: Int, frameHeight: Int): Mp4Muxer {
-            val path = File(dir, "me.mp4").absolutePath
+            val path = File(dir, "${System.currentTimeMillis()}_me.mp4").absolutePath
             val mp4Param = Mp4Muxer.Params().apply {
                 this.path = path
-                this.width = frameHeight /// 2
-                this.height = frameWidth /// 2
+                this.width = frameHeight   //横屏-屏幕宽高
+                this.height = frameWidth
                 this.balanceTimestampGapInSeconds = 5
             }
             val audioParam = AudioDevice.Params()
@@ -230,6 +288,29 @@ class CameraActivity : BaseActivity() {
             logMED("---onStopRecordingFrame----")
         }
 
+        override fun onFrameRecording(
+            cameraView: CameraView,
+            frameBytes: CameraView.FrameBytes,
+            width: Int,
+            height: Int,
+            format: Int,
+            orientation: Int,
+            facing: Int,
+            timeStampInNs: Long,
+            cropRect: Rect //重写它 裁剪
+        ) {
+            super.onFrameRecording(
+                cameraView,
+                frameBytes,
+                width,
+                height,
+                format,
+                orientation,
+                facing,
+                timeStampInNs,
+                cropRect
+            )
+        }
     }
 
     override fun onResume() {
@@ -274,5 +355,6 @@ class CameraActivity : BaseActivity() {
             ratioView.setRadioType(RatioVideoView.RATIO_1_1)
             ratio_tv.text = "1:1"
         }
+        initVideoCamera()
     }
 }

@@ -36,7 +36,8 @@ abstract class Mp4MuxerHandler : AudioDevice.Callback, CameraView.Callback {
     private val mVideoLock = Object()
 
     companion object {
-        private val CODE_POOL_SIZE = Math.min(Math.max(2, Runtime.getRuntime().availableProcessors()), 3)
+        private val CODE_POOL_SIZE =
+            Math.min(Math.max(2, Runtime.getRuntime().availableProcessors()), 3)
     }
 
     constructor() : this(CODE_POOL_SIZE)
@@ -106,8 +107,17 @@ abstract class Mp4MuxerHandler : AudioDevice.Callback, CameraView.Callback {
         mReleased.set(false)
     }
 
-    override fun onFrameRecording(cameraView: CameraView, frameBytes: CameraView.FrameBytes, width: Int, height: Int, format: Int,
-                                  orientation: Int, facing: Int, timeStampInNs: Long) {
+    override fun onFrameRecording(
+        cameraView: CameraView,
+        frameBytes: CameraView.FrameBytes,
+        width: Int,
+        height: Int,
+        format: Int,
+        orientation: Int,
+        facing: Int,
+        timeStampInNs: Long,
+        cropRect: Rect
+    ) {
         if (mReleased.get() || (!mMp4Muxer.mSupportNV12 && !mMp4Muxer.mSupportI420)) {
             return
         }
@@ -115,7 +125,7 @@ abstract class Mp4MuxerHandler : AudioDevice.Callback, CameraView.Callback {
             mStartTimestamp.compareAndSet(0, timeStampInNs)
         }
         val pool = mCodeThreadPool
-                ?: throw IllegalArgumentException("RecordThreadPool is not initialized! ")
+            ?: throw IllegalArgumentException("RecordThreadPool is not initialized! ")
         frameBytes.consumed = true
         pool.execute(object : FrameCodeThreadPool.TimestampRunnable(timeStampInNs) {
             override fun run() {
@@ -130,7 +140,17 @@ abstract class Mp4MuxerHandler : AudioDevice.Callback, CameraView.Callback {
                 } else if (format == ImageFormat.YV12) {
                     codeFormat = LibYuvUtils.FOURCC_YV12
                 }
-                val compressed = compress(data, data.size, orientation, facing, width, height, codeFormat, mMp4Muxer.mSupportI420)
+                val compressed = compress(
+                    data,
+                    data.size,
+                    orientation,
+                    facing,
+                    width,
+                    height,
+                    codeFormat,
+                    mMp4Muxer.mSupportI420,
+                    cropRect
+                )
                 //2.release bytes.
                 frameBytes.bytesPool.releaseBytes(data)
                 //3.wait for last frame to complete.
@@ -151,30 +171,31 @@ abstract class Mp4MuxerHandler : AudioDevice.Callback, CameraView.Callback {
         })
     }
 
-    private fun compress(data: ByteArray, len: Int, orientation: Int, facing: Int,
-                         width: Int, height: Int, format: Int, supportI420: Boolean): ByteArray {
+    private fun compress(
+        data: ByteArray, len: Int, orientation: Int, facing: Int,
+        width: Int, height: Int, format: Int, supportI420: Boolean,
+        cropRect: Rect
+    ): ByteArray {
         var resultBf = mCompressedFrameBytesPool.getBytes()
         val rotation = LibYuvUtils.ROTATION_90 * orientation / 90
 
         //原始数据 默认是横屏
-        val frameRect = Rect(50,30, width,height-30)
+//        val frameRect = Rect(50, 30, width, height - 30)
 
-
-        val res = LibYuvUtils.scaleRotationAndMirrorToI420(data, len, resultBf, width, height,
-            if (rotation % 90 == 0) mMp4Height else mMp4Width, if (rotation % 90 == 0) mMp4Width else mMp4Height,
-            LibYuvUtils.SCALE_FILTER_NONE, rotation, facing == CameraFunctions.FACING_FRONT, format
-            , frameRect.left,frameRect.top,frameRect.width(),frameRect.height()
+        val res = LibYuvUtils.scaleRotationAndMirrorToI420(
+            data,
+            len,
+            resultBf,
+            width,
+            height,
+            if (rotation % 90 == 0) mMp4Height else mMp4Width,
+            if (rotation % 90 == 0) mMp4Width else mMp4Height,
+            LibYuvUtils.SCALE_FILTER_NONE,
+            rotation,
+            facing == CameraFunctions.FACING_FRONT,
+            format,
+            cropRect
         )
-
-        //剪裁
-//        if (true) {
-//            val cropBf = cropI420(
-//                resultBf, mMp4Width, mMp4Height,
-//                mMp4Width - 50, mMp4Height - 50, 50, 50
-//            )
-//            mCompressedFrameBytesPool.releaseBytes(resultBf)
-//            resultBf = cropBf
-//        }
 
         if (res > 0 && !supportI420) {
             val result = mCompressedFrameBytesPool.getBytes()
@@ -183,16 +204,6 @@ abstract class Mp4MuxerHandler : AudioDevice.Callback, CameraView.Callback {
             return result
         }
         return resultBf
-    }
-
-
-    private fun cropI420(
-        data: ByteArray, width: Int, height: Int,
-        cropWidth: Int, cropHeight: Int, cropLeft: Int, cropTop: Int
-    ): ByteArray {
-        val resusltBf = mCompressedFrameBytesPool.getBytes()
-        LibYuvUtils.cropI420(data, width, height, resusltBf, cropWidth, cropHeight, cropLeft, cropTop)
-        return resusltBf
     }
 
     override fun onStopRecordingFrame(cameraView: CameraView, timeStampInNs: Long) {

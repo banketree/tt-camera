@@ -11,10 +11,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <com.yqritc.scalablevideoview.ScalableVideoView
-        android:id="@+id/vvPreview"
+    <SurfaceView
+        android:id="@+id/preview_surfaceView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        app:scalableType="centerCrop" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+
 </FrameLayout>

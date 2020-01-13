@@ -1,5 +1,7 @@
 package com.miracles.codec.camera;
 
+import android.graphics.Rect;
+
 /**
  * Created by lxw
  */
@@ -106,16 +108,24 @@ public class LibYuvUtils {
      * @param rotation  rotation degree.
      * @param mirror    mirror or not.
      * @param format    input samples format
-     * @params crop*    input crop rect
      * @return result= if('native success') 'data size of convert len' else <=0
+     * @params crop*    input crop rect
      */
     public native static int scaleRotationAndMirrorToI420(byte[] samples, int sampleSize, byte[] result, int srcWidth,
                                                           int srcHeight, int scaleWidth, int scaleHeight, int scaleMode, int rotation,
-                                                          boolean mirror, int format, int cropLeft, int cropTop,int cropWidth, int cropHeight);
+                                                          boolean mirror, int format, int cropLeft, int cropTop, int cropWidth, int cropHeight);
+
+    public static int scaleRotationAndMirrorToI420(byte[] samples, int sampleSize, byte[] result, int srcWidth,
+                                                   int srcHeight, int scaleWidth, int scaleHeight, int scaleMode, int rotation,
+                                                   boolean mirror, int format, Rect cropRect) {
+        return scaleRotationAndMirrorToI420(samples, sampleSize, result, srcWidth,
+                srcHeight, scaleWidth, scaleHeight, scaleMode, rotation,
+                mirror, format, cropRect.left, cropRect.top, cropRect.width(), cropRect.height());
+    }
 
     /*
-    * 重写上面的方法 不裁剪
-    * */
+     * 重写上面的方法 不裁剪
+     * */
     public static int scaleRotationAndMirrorToI420(byte[] samples, int sampleSize, byte[] result, int srcWidth,
                                                    int srcHeight, int scaleWidth, int scaleHeight, int scaleMode, int rotation,
                                                    boolean mirror, int format) {
@@ -123,6 +133,7 @@ public class LibYuvUtils {
                 srcHeight, scaleWidth, scaleHeight, scaleMode, rotation,
                 mirror, format, 0, 0, srcWidth, srcHeight);
     }
+
 
     /**
      * @return size of result.

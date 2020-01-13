@@ -38,7 +38,11 @@ class CameraView : FrameLayout {
 
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
-    constructor(context: Context, attrs: AttributeSet?, @AttrRes defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet?, @AttrRes defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) {
         initView(context, attrs)
     }
 
@@ -282,7 +286,8 @@ class CameraView : FrameLayout {
      *
      * try 2  focus with focusRect&meteringRect and callback
      */
-    fun focus(focusRect: Rect?, meteringRect: Rect?, cb: ((Boolean) -> Unit)?) = mDeviceImpl.focus(focusRect, meteringRect, cb)
+    fun focus(focusRect: Rect?, meteringRect: Rect?, cb: ((Boolean) -> Unit)?) =
+        mDeviceImpl.focus(focusRect, meteringRect, cb)
 
     override fun onSaveInstanceState(): Parcelable {
         val state = SavedState(super.onSaveInstanceState())
@@ -291,7 +296,8 @@ class CameraView : FrameLayout {
         state.flash = getFlashing()
         state.previewSizeStrategy = getCameraSizeStrategy(CameraFunctions.STRATEGY_PREVIEW_SIZE)
         state.pictureSizeStrategy = getCameraSizeStrategy(CameraFunctions.STRATEGY_PICTURE_SIZE)
-        state.recordPreviewSizeStrategy = getCameraSizeStrategy(CameraFunctions.STRATEGY_RECORD_PREVIEW_SIZE)
+        state.recordPreviewSizeStrategy =
+            getCameraSizeStrategy(CameraFunctions.STRATEGY_RECORD_PREVIEW_SIZE)
         return state
     }
 
@@ -371,8 +377,10 @@ class CameraView : FrameLayout {
          */
         fun onStartCapturePicture(cameraView: CameraView) {}
 
-        fun onPictureCaptured(cameraView: CameraView, data: ByteArray, len: Int, width: Int,
-                              height: Int, format: Int, orientation: Int, facing: Int, timeStampInNs: Long) {
+        fun onPictureCaptured(
+            cameraView: CameraView, data: ByteArray, len: Int, width: Int,
+            height: Int, format: Int, orientation: Int, facing: Int, timeStampInNs: Long
+        ) {
 
         }
 
@@ -381,14 +389,28 @@ class CameraView : FrameLayout {
          */
         fun onStartRecordingFrame(cameraView: CameraView, timeStampInNs: Long) {}
 
-        fun onFrameRecording(cameraView: CameraView, frameBytes: FrameBytes, width: Int, height: Int, format: Int,
-                             orientation: Int, facing: Int, timeStampInNs: Long) {
+        fun onFrameRecording(
+            cameraView: CameraView,
+            frameBytes: FrameBytes,
+            width: Int,
+            height: Int,
+            format: Int,
+            orientation: Int,
+            facing: Int,
+            timeStampInNs: Long,
+            cropRect: Rect = Rect(0, 0, width, height)
+        ) {
         }
 
         fun onStopRecordingFrame(cameraView: CameraView, timeStampInNs: Long) {}
     }
 
-    data class FrameBytes(val datas: ByteArray, val len: Int, val bytesPool: ByteArrayPool, var consumed: Boolean) {
+    data class FrameBytes(
+        val datas: ByteArray,
+        val len: Int,
+        val bytesPool: ByteArrayPool,
+        var consumed: Boolean
+    ) {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other !is FrameBytes) return false

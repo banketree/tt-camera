@@ -159,10 +159,7 @@ class RatioView : View {
         var width = preViewWidth
         var height = preViewHeight
 
-        val manager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        val outMetrics = DisplayMetrics()
-        manager.defaultDisplay.getMetrics(outMetrics)
-        if (this.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) { //竖屏
+        if (isOrientationPortrait()) { //竖屏
             width = preViewHeight
             height = preViewWidth
         }
@@ -174,4 +171,11 @@ class RatioView : View {
         return getRatioAreaRect(height)
     }
 
+    //竖屏
+    fun isOrientationPortrait(): Boolean {
+        val manager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val outMetrics = DisplayMetrics()
+        manager.defaultDisplay.getMetrics(outMetrics)
+        return this.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+    }
 }

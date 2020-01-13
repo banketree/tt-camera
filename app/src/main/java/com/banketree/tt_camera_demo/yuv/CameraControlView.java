@@ -38,17 +38,16 @@ public class CameraControlView extends View {
     private int inside_color = 0xFFFFFFFF;
 
     //只能拍照
-    public static final int BUTTON_STATE_ONLY_CAPTURE = 0x101;
+    public static final int FUN_TYPE_ONLY_CAPTURE = 0x101;
     //只能录像
-    public static final int BUTTON_STATE_ONLY_RECORDER = 0x102;
+    public static final int FUN_TYPE_ONLY_RECORDER = 0x102;
     //两者都可以
-    public static final int BUTTON_STATE_BOTH = 0x103;
-
+    public static final int FUN_TYPE_BOTH = 0x103;
 
     //当前按钮状态
     private int state;
     //按钮可执行的功能状态（拍照,录制,两者）
-    private int button_state;
+    private int funType;
 
     private Paint mPaint;
     //进度条宽度
@@ -134,7 +133,7 @@ public class CameraControlView extends View {
         //初始化为空闲状态
         state = STATE_IDLE;
         //初始化按钮为可录制可拍照
-        button_state = BUTTON_STATE_BOTH;
+        funType = FUN_TYPE_BOTH;
         //默认最长录制时间为10s
         duration = 10 * 1000;
         //默认最短录制时间为1.5s
@@ -179,7 +178,7 @@ public class CameraControlView extends View {
                 state = STATE_PRESS;
 
                 //判断按钮状态是否为可录制状态
-                if ((button_state == BUTTON_STATE_ONLY_RECORDER || button_state == BUTTON_STATE_BOTH)) {
+                if ((funType == FUN_TYPE_ONLY_RECORDER || funType == FUN_TYPE_BOTH)) {
                     //同时延长250启动长按后处理的逻辑Runnable
                     postDelayed(longPressRunnable, 250);
                 }
@@ -206,8 +205,8 @@ public class CameraControlView extends View {
             //当前是点击按下
             case STATE_PRESS: {
                 if (cameraControlListener != null
-                        && (button_state == JCameraView.BUTTON_STATE_ONLY_CAPTURE
-                        || button_state == JCameraView.BUTTON_STATE_BOTH)) {
+                        && (funType == FUN_TYPE_ONLY_CAPTURE
+                        || funType == FUN_TYPE_BOTH)) {
                     startCaptureAnimation(button_inside_radius);
                 } else {
                     state = STATE_IDLE;
@@ -386,8 +385,8 @@ public class CameraControlView extends View {
     /**
      * 设置按钮功能（拍照和录像）
      */
-    public void setButtonFeatures(int state) {
-        this.button_state = state;
+    public void setFunType(int type) {
+        this.funType = type;
     }
 
     /**
