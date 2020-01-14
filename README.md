@@ -6,8 +6,7 @@ Camera1 Camera2 系列
 
 功能引用依赖库
 
-
-    implementation 'com.github.banketree:tt-camera:v0.0.2'
+    implementation 'com.github.banketree.tt-camera:camera-component:v0.0.2'
 
 
     class TakeCameraActivity : CameraActivity() {
@@ -62,7 +61,6 @@ class PreviewCameraActivity : PreviewActivity() {
 
 
 其他 分支用于 功能测试
-
 
 ![Image text](https://github.com/banketree/tt-camera/blob/master/screenShot/2.jpg)
 
