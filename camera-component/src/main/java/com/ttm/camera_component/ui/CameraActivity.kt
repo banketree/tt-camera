@@ -27,7 +27,7 @@ import java.io.File
  * @time 2020/1/14 11:31
  * @description
  * 按比例拍照以及录制视频
- * 16:9 4:3 1:1
+ * 16:9 || 4:3 || 1:1
  */
 @Suppress("DEPRECATION")
 abstract class CameraActivity : BaseActivity() {
@@ -63,6 +63,10 @@ abstract class CameraActivity : BaseActivity() {
                 return
             }
             if (resultCode == Activity.RESULT_OK) {
+                val intent = Intent()
+                intent.putExtra(PreviewActivity.PARAMS_PATH, path)
+                intent.putExtra(PreviewActivity.PARAMS_FLAG_PICTURE, flagPicture)
+                setResult(Activity.RESULT_OK, intent)
                 finish()
             } else { //取消则删除
                 File(path).deleteOnExit()
