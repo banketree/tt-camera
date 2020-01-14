@@ -15,8 +15,6 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
-import com.ttm.lib_camera.JCameraView;
-
 
 public class CameraControlView extends View {
     //空闲状态

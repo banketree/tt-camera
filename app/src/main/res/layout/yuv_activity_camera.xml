@@ -24,7 +24,7 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_margin="16dp"
-            android:src="@drawable/camera_arrow_left_back" />
+            android:src="@drawable/yuv_arrow_left_back" />
 
         <Space
             android:layout_width="match_parent"
@@ -36,7 +36,7 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_margin="16dp"
-            android:background="@drawable/camera_shape_white_5"
+            android:background="@drawable/yuv_shape_white_5"
             android:gravity="center"
             android:text="16:9"
             android:textColor="@android:color/white" />
@@ -46,14 +46,14 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_margin="16dp"
-            android:src="@drawable/camera_ic_flash_on" />
+            android:src="@drawable/yuv_flash_on" />
 
         <ImageView
             android:id="@+id/image_switch"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_margin="16dp"
-            android:src="@drawable/camera_ic_camera" />
+            android:src="@drawable/yuv_camera" />
     </LinearLayout>
 
     <com.banketree.tt_camera_demo.yuv.CameraControlView

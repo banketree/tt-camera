@@ -13,7 +13,6 @@ import com.miracles.codec.camera.AudioDevice
 import com.miracles.codec.camera.CapturePictureHandler
 import com.miracles.codec.camera.Mp4Muxer
 import com.miracles.codec.camera.Mp4MuxerHandler
-import com.ttm.lib_camera.RatioVideoView
 import kotlinx.android.synthetic.main.yuv_activity_camera.*
 import java.io.File
 
@@ -172,9 +171,9 @@ class CameraActivity : BaseActivity() {
         }
         ratio_tv.setOnClickListener {
             when (getRatioType()) {
-                RatioVideoView.RATIO_16_9 -> setRatioTypeUI(RatioVideoView.RATIO_4_3)
-                RatioVideoView.RATIO_4_3 -> setRatioTypeUI(RatioVideoView.RATIO_1_1)
-                RatioVideoView.RATIO_1_1 -> setRatioTypeUI(RatioVideoView.RATIO_16_9)
+                RatioView.RATIO_16_9 -> setRatioTypeUI(RatioView.RATIO_4_3)
+                RatioView.RATIO_4_3 -> setRatioTypeUI(RatioView.RATIO_1_1)
+                RatioView.RATIO_1_1 -> setRatioTypeUI(RatioView.RATIO_16_9)
             }
         }
         image_flash.setOnClickListener {
@@ -218,77 +217,6 @@ class CameraActivity : BaseActivity() {
                 finish()
             } else {
                 File(path).deleteOnExit()
-            }
-        }
-    }
-
-    private fun getRecordStrategy(): ChooseSizeStrategy {
-        val display = resources.displayMetrics
-        logMED("display width=${display.widthPixels} ,height=${display.heightPixels}")
-        val aspectRatio = display.heightPixels.toFloat() / display.widthPixels
-        return MChooseStrategy(16 / 9f)
-    }
-
-    private class MChooseStrategy(val aspectRatio: Float) : ChooseSizeStrategy {
-        private val mFacingBackChooseStrategy: ChooseSizeStrategy
-        private val mFacingFrontChooseStrategy: ChooseSizeStrategy
-
-        init {
-            mFacingFrontChooseStrategy = ChooseSizeStrategy.AspectRatioStrategy(
-                aspectRatio,
-                (480 * aspectRatio).toInt(),
-                480
-            )
-            mFacingBackChooseStrategy = ChooseSizeStrategy.AspectRatioStrategy(
-                aspectRatio,
-                (1080 * aspectRatio).toInt(),
-                1080
-            )
-        }
-
-        constructor(parcel: Parcel) : this(parcel.readFloat()) {
-        }
-
-        override fun writeToParcel(dest: Parcel?, flags: Int) {
-            dest?.writeFloat(aspectRatio)
-        }
-
-        override fun describeContents() = 0
-
-        override fun chooseSize(
-            preview: CameraPreview,
-            displayOrientation: Int,
-            cameraSensorOrientation: Int,
-            facing: Int,
-            sizes: List<Size>
-        ): Size {
-            return if (facing == CameraFunctions.FACING_FRONT) {
-                mFacingFrontChooseStrategy.chooseSize(
-                    preview,
-                    displayOrientation,
-                    cameraSensorOrientation,
-                    facing,
-                    sizes
-                )
-            } else {
-                mFacingBackChooseStrategy.chooseSize(
-                    preview,
-                    displayOrientation,
-                    cameraSensorOrientation,
-                    facing,
-                    sizes
-                )
-            }
-        }
-
-
-        companion object CREATOR : Parcelable.Creator<MChooseStrategy> {
-            override fun createFromParcel(parcel: Parcel): MChooseStrategy {
-                return MChooseStrategy(parcel)
-            }
-
-            override fun newArray(size: Int): Array<MChooseStrategy?> {
-                return arrayOfNulls(size)
             }
         }
     }
@@ -361,13 +289,13 @@ class CameraActivity : BaseActivity() {
     private fun setCameraFlashUI(flashing: Int) {
         when (flashing) {
             CameraFunctions.FLASH_AUTO -> {
-                image_flash.setImageResource(com.ttm.lib_camera.R.drawable.camera_ic_flash_auto)
+                image_flash.setImageResource(R.drawable.yuv_flash_auto)
             }
             CameraFunctions.FLASH_ON -> {
-                image_flash.setImageResource(com.ttm.lib_camera.R.drawable.camera_ic_flash_on)
+                image_flash.setImageResource(R.drawable.yuv_flash_on)
             }
             CameraFunctions.FLASH_OFF -> {
-                image_flash.setImageResource(com.ttm.lib_camera.R.drawable.camera_ic_flash_off)
+                image_flash.setImageResource(R.drawable.yuv_flash_off)
             }
         }
     }
@@ -377,14 +305,14 @@ class CameraActivity : BaseActivity() {
     }
 
     private fun setRatioTypeUI(radioType: Int) {
-        if (radioType == RatioVideoView.RATIO_16_9) {
-            ratioView.setRadioType(RatioVideoView.RATIO_16_9)
+        if (radioType == RatioView.RATIO_16_9) {
+            ratioView.setRadioType(RatioView.RATIO_16_9)
             ratio_tv.text = "16:9"
-        } else if (radioType == RatioVideoView.RATIO_4_3) {
-            ratioView.setRadioType(RatioVideoView.RATIO_4_3)
+        } else if (radioType == RatioView.RATIO_4_3) {
+            ratioView.setRadioType(RatioView.RATIO_4_3)
             ratio_tv.text = "4:3"
-        } else if (radioType == RatioVideoView.RATIO_1_1) {
-            ratioView.setRadioType(RatioVideoView.RATIO_1_1)
+        } else if (radioType == RatioView.RATIO_1_1) {
+            ratioView.setRadioType(RatioView.RATIO_1_1)
             ratio_tv.text = "1:1"
         }
         initVideoCamera()

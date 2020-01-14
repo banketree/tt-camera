@@ -13,7 +13,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         test_tv.setOnClickListener {
-            startActivity(Intent(this, TakeCameraActivity::class.java))
         }
         test_two.setOnClickListener {
             startActivity(Intent(this, CameraActivity::class.java))

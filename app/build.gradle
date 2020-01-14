@@ -44,7 +44,6 @@ dependencies {
     //glide
     implementation dependence["glide"]
     annotationProcessor dependence["glide-compiler"]
-    implementation project(path: ':lib-camera')
 
     implementation project(':mp4-codec')
     implementation 'com.github.chrisbanes:PhotoView:2.0.0'

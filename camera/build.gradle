@@ -44,5 +44,4 @@ dependencies {
 
     implementation dependence['kotlin-stdlib-jdk7']
     implementation dependence['core-ktx']
-    implementation dependence['appcompat']
 }

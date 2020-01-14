@@ -1,2 +1,2 @@
-include ':app', ':lib-camera', ':camera', ':mp4-codec'
+include ':app', ':camera', ':mp4-codec'
 rootProject.name='tt-camera'
