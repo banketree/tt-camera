@@ -30,7 +30,7 @@ import java.io.File
  * 16:9 4:3 1:1
  */
 @Suppress("DEPRECATION")
-open class CameraActivity : BaseActivity() {
+abstract class CameraActivity : BaseActivity() {
     companion object {
         const val REQUEST_PREVIEW_PHOTO_VIDEO: Int = 101
     }
@@ -72,8 +72,8 @@ open class CameraActivity : BaseActivity() {
 
     private fun initView() {
         initControlView()
-        initPictrueCamera(cameraView, getSavedDir(), cameraControlView)
-        initMP4MuxerCamera(cameraView, getSavedDir(), cameraControlView)
+        initPictrueCamera(cameraView, getSavedDir(false), cameraControlView)
+        initMP4MuxerCamera(cameraView, getSavedDir(true), cameraControlView)
     }
 
     private fun initControlView() {
@@ -166,7 +166,7 @@ open class CameraActivity : BaseActivity() {
                 ratio_tv.text = "1:1"
             }
         }
-        initMP4MuxerCamera(cameraView, getSavedDir(), cameraControlView)
+        initMP4MuxerCamera(cameraView, getSavedDir(true), cameraControlView)
     }
 
     /**
@@ -179,7 +179,7 @@ open class CameraActivity : BaseActivity() {
      */
     open fun getRecordVideoDuration(): Int = 10
 
-    open fun getSavedDir(): File {
+    open fun getSavedDir(isVideo: Boolean): File {
         val dir = File(Environment.getExternalStorageDirectory(), "Camera")
         if (!dir.exists()) dir.mkdirs()
         return dir

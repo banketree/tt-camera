@@ -349,8 +349,8 @@ public class CameraControlView extends View {
     /**
      * 设置最长录制时间
      */
-    public void setDuration(int duration) {
-        this.duration = duration * 1000;
+    public void setDuration(int time) {
+        this.duration = time * 1000;
         //录制定时器
         timer = new RecordCountDownTimer(duration, duration / 360);
     }

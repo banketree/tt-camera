@@ -1,14 +1,27 @@
 package com.banketree.tt_camera_demo
 
 import android.content.Intent
+import com.thinkcore.storage.TFilePath
+import com.thinkcore.storage.TStorageUtils
 import com.ttm.camera_component.ui.CameraActivity
 import com.ttm.camera_component.ui.PreviewActivity
 import java.io.File
 
 class TakeCameraActivity : CameraActivity() {
+    private val tFilePath: TFilePath by lazy { TFilePath(this) }
 
-    override fun getSavedDir(): File {
-        return super.getSavedDir()
+    override fun getSavedDir(isVideo: Boolean): File {
+        if (TStorageUtils.isExternalStoragePresent()) {
+            return File(
+                if (isVideo)
+                    tFilePath.externalVideoDir else tFilePath.externalImageDir
+            )
+        }
+
+        return File(
+            if (isVideo)
+                tFilePath.interVideoDir else tFilePath.interImageDir
+        )
     }
 
     override fun startPreviewActivity(filePath: String, picFlag: Boolean) {

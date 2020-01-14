@@ -41,6 +41,7 @@ dependencies {
     implementation dependence['appcompat']
     implementation dependence['core-ktx']
     implementation dependence['constraintlayout']
+    api dependence["thinkStorage"]
     //glide
     implementation dependence["glide"]
     annotationProcessor dependence["glide-compiler"]
