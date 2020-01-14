@@ -6,7 +6,7 @@ Camera1 Camera2 系列
 
 功能引用依赖库
 
-    implementation 'com.github.banketree.tt-camera:camera-component:v0.0.2'
+    implementation 'com.github.banketree.tt-camera:camera-component:v0.0.3'
 
 
     class TakeCameraActivity : CameraActivity() {
