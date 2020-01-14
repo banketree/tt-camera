@@ -9,12 +9,38 @@
     <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/photoView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
     <SurfaceView
         android:id="@+id/preview_surfaceView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        android:visibility="gone" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="30dp"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <com.banketree.tt_camera_demo.yuv.CameraButton
+            android:id="@+id/camera_cancel_btn"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginLeft="30dp" />
+
+        <Space
+            android:layout_width="100dp"
+            android:layout_height="wrap_content" />
+
+        <com.banketree.tt_camera_demo.yuv.CameraButton
+            android:id="@+id/camera_comfirm_btn"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginRight="30dp" />
+    </LinearLayout>
 </FrameLayout>

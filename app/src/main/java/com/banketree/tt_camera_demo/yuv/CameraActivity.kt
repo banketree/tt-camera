@@ -1,8 +1,11 @@
 package com.banketree.tt_camera_demo.yuv
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.Rect
 import android.os.*
+import android.text.TextUtils
 import android.util.Log
 import com.banketree.tt_camera_demo.R
 import com.miracles.camera.*
@@ -19,6 +22,10 @@ import java.io.File
  */
 @Suppress("DEPRECATION")
 class CameraActivity : BaseActivity() {
+    companion object {
+        const val REQUEST_PREVIEW_PHOTO: Int = 101
+    }
+
     private val baseActivity: BaseActivity by lazy { this }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,9 +61,16 @@ class CameraActivity : BaseActivity() {
 
             override fun onStopRecordingFrame(cameraView: CameraView, timeStampInNs: Long) {
                 super.onStopRecordingFrame(cameraView, timeStampInNs)
-                if (timeStampInNs >= 1000)
-                    PreviewActivity.start(this@CameraActivity, mMp4Path, false)
                 cameraControlView.resetState()
+                if (timeStampInNs < 2000) {
+                    File(mMp4Path).deleteOnExit()
+                    return
+                }
+
+                val intent = Intent(this@CameraActivity, PreviewActivity::class.java)
+                intent.putExtra(PreviewActivity.PARAMS_PATH, mMp4Path)
+                intent.putExtra(PreviewActivity.PARAMS_FLAG_PICTURE, false)
+                startActivityForResult(intent, REQUEST_PREVIEW_PHOTO)
             }
 
             private fun getRatioAreaRect(width: Int, height: Int): Rect {
@@ -120,7 +134,10 @@ class CameraActivity : BaseActivity() {
                 if (ex != null) {
                     logMEE("onPictureTaken failed.", ex)
                 } else {
-                    PreviewActivity.start(this@CameraActivity, path, true)
+                    val intent = Intent(this@CameraActivity, PreviewActivity::class.java)
+                    intent.putExtra(PreviewActivity.PARAMS_PATH, path)
+                    intent.putExtra(PreviewActivity.PARAMS_FLAG_PICTURE, true)
+                    startActivityForResult(intent, REQUEST_PREVIEW_PHOTO)
                 }
             }
 
@@ -189,6 +206,21 @@ class CameraActivity : BaseActivity() {
         setCameraFlashUI(cameraView.getFlashing())
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_PREVIEW_PHOTO && data != null) {
+            val path = data.getStringExtra(PreviewActivity.PARAMS_PATH)
+            val flagPicture = data.getBooleanExtra(PreviewActivity.PARAMS_FLAG_PICTURE, true)
+            if (TextUtils.isEmpty(path) || !File(path).exists()) {
+                return
+            }
+            if (resultCode == Activity.RESULT_OK) {
+                finish()
+            } else {
+                File(path).deleteOnExit()
+            }
+        }
+    }
 
     private fun getRecordStrategy(): ChooseSizeStrategy {
         val display = resources.displayMetrics

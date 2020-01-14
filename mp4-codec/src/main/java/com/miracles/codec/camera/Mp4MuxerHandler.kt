@@ -21,7 +21,7 @@ abstract class Mp4MuxerHandler : AudioDevice.Callback, CameraView.Callback {
     private var mCompressedFrameBytesPool: ByteArrayPool = ByteArrayPool.EMPTY
     private lateinit var mMuxer: MeMuxer
     private lateinit var mMp4Muxer: Mp4Muxer
-    protected lateinit var mMp4Path: String
+    lateinit var mMp4Path: String
     private var mStartTimestamp = AtomicLong(0)
     private var mRecordingTimeStamp = 0L
     protected var mMp4Width = 0

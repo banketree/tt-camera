@@ -1,10 +1,10 @@
 package com.banketree.tt_camera_demo.yuv
 
-import android.content.Context
+import android.app.Activity
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.SurfaceHolder
 import android.view.View
 import com.banketree.tt_camera_demo.R
@@ -19,27 +19,24 @@ import java.io.File
 class PreviewActivity : BaseActivity() {
 
     companion object {
-        private const val PARAMS_PATH = "path"
-        private const val PARAMS_FLAG_PICTURE = "flag.picture"
-        fun start(context: Context, path: String, flagPicture: Boolean) {
-            val intent = Intent(context, PreviewActivity::class.java)
-            intent.putExtra(PARAMS_PATH, path)
-            intent.putExtra(PARAMS_FLAG_PICTURE, flagPicture)
-            context.startActivity(intent)
-        }
+        const val PARAMS_PATH = "path"
+        const val PARAMS_FLAG_PICTURE = "flag.picture"
     }
+
+    private var path: String = ""
+    private var flagPicture: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.yuv_activity_preview)
-        val intent = intent
-        val path = intent.getStringExtra(PARAMS_PATH)
-        val flagPicture = intent.getBooleanExtra(PARAMS_FLAG_PICTURE, true)
-        if (path == null || !File(path).exists()) {
+        path = intent.getStringExtra(PARAMS_PATH)
+        flagPicture = intent.getBooleanExtra(PARAMS_FLAG_PICTURE, true)
+        if (TextUtils.isEmpty(path) || !File(path).exists()) {
             finish()
-        } else {
-            initView(path, flagPicture)
+            return
         }
+
+        setContentView(R.layout.yuv_activity_preview)
+        initView(path, flagPicture)
     }
 
     override fun onDestroy() {
@@ -48,19 +45,35 @@ class PreviewActivity : BaseActivity() {
         mediaPlayer?.release()
     }
 
+    private fun getResultIntent(): Intent {
+        val intent = Intent()
+        intent.putExtra(PARAMS_PATH, path)
+        intent.putExtra(PARAMS_FLAG_PICTURE, flagPicture)
+        return intent
+    }
+
     private fun initView(path: String, flagPicture: Boolean) {
+        camera_cancel_btn.postDelayed({
+            camera_cancel_btn.setType(CameraButton.TYPE_CANCEL)
+            camera_comfirm_btn.setType(CameraButton.TYPE_CONFIRM)
+        }, 250)
+
+        //取消
+        camera_cancel_btn.setOnClickListener {
+            setResult(Activity.RESULT_CANCELED, getResultIntent())
+            finish()
+        }
+        //确认
+        camera_comfirm_btn.setOnClickListener {
+            setResult(Activity.RESULT_OK, getResultIntent())
+            finish()
+        }
+
         if (flagPicture) {
             photoView.visibility = View.VISIBLE
-            val options = BitmapFactory.Options()
-            options.inJustDecodeBounds = true
-            BitmapFactory.decodeFile(path, options)
-            val sampleSize = 1080 / options.outWidth
-            options.inJustDecodeBounds = false
-            if (sampleSize > 1) {
-                options.inSampleSize = sampleSize
-            }
             Glide.with(this).load(path).into(photoView)
         } else {
+            preview_surfaceView.visibility = View.VISIBLE
             playVideo(path)
         }
     }
@@ -95,7 +108,6 @@ class PreviewActivity : BaseActivity() {
                 向player中设置dispay，也就是SurfaceHolder。
                 但此时有可能SurfaceView还没有创建成功，所以需要监听SurfaceView的创建事件
              */
-            preview_surfaceView.visibility = View.VISIBLE
             preview_surfaceView.holder.addCallback(object : SurfaceHolder.Callback {
                 override fun surfaceCreated(holder: SurfaceHolder) {
                     //将播放器和SurfaceView关联起来

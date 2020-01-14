@@ -22,10 +22,11 @@
         android:layout_marginTop="20dp"
         android:text="test Two" />
 
-
-    <com.banketree.tt_camera_demo.yuv.CameraControlView
-        android:id="@+id/progress_circular"
-        android:layout_width="150dp"
-        android:layout_height="150dp" />
+    <TextView
+        android:id="@+id/test_three"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="test Three" />
 
 </LinearLayout>
