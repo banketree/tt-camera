@@ -44,6 +44,5 @@ dependencies {
 
     implementation dependence['kotlin-stdlib-jdk7']
     implementation dependence['core-ktx']
-    implementation dependence['appcompat']
-    api project(':camera')
+    api project(':camera-lib')
 }

@@ -1,0 +1,8 @@
+<resources>
+    <string name="camera_confirm">确定</string>
+    <string name="camera_error">错误</string>
+    <string name="camera_tip">提示</string>
+    <string name="camera_take_photo_error">拍照出错拉,请联系工程师解决.</string>
+    <string name="camera_record_video_short_time_error">录像时间太短了</string>
+    <string name="camera_camera_error">相机驱动未找到,请联系工程师解决.</string>
+</resources>

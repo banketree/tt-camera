@@ -21,7 +21,7 @@ abstract class Mp4MuxerHandler : AudioDevice.Callback, CameraView.Callback {
     private var mCompressedFrameBytesPool: ByteArrayPool = ByteArrayPool.EMPTY
     private lateinit var mMuxer: MeMuxer
     private lateinit var mMp4Muxer: Mp4Muxer
-    lateinit var mMp4Path: String
+    private lateinit var mMp4Path: String
     private var mStartTimestamp = AtomicLong(0)
     private var mRecordingTimeStamp = 0L
     protected var mMp4Width = 0
@@ -224,4 +224,8 @@ abstract class Mp4MuxerHandler : AudioDevice.Callback, CameraView.Callback {
      * Invoke multiple times.
      */
     abstract fun createMp4Muxer(frameWidth: Int, frameHeight: Int): Mp4Muxer
+
+    fun getMp4Path(): String {
+        return mMp4Path
+    }
 }

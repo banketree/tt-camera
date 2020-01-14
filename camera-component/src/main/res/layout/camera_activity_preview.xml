@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     android:background="#000">
 
-    <com.github.chrisbanes.photoview.PhotoView
-        android:id="@+id/photoView"
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/preview_photo_img"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone" />
@@ -27,7 +27,7 @@
         android:gravity="center_horizontal"
         android:orientation="horizontal">
 
-        <com.banketree.tt_camera_demo.yuv.CameraButton
+        <com.ttm.camera_component.widget.CameraButton
             android:id="@+id/camera_cancel_btn"
             android:layout_width="100dp"
             android:layout_height="100dp"
@@ -37,7 +37,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content" />
 
-        <com.banketree.tt_camera_demo.yuv.CameraButton
+        <com.ttm.camera_component.widget.CameraButton
             android:id="@+id/camera_comfirm_btn"
             android:layout_width="100dp"
             android:layout_height="100dp"

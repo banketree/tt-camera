@@ -1,23 +1,30 @@
-package com.banketree.tt_camera_demo.yuv
+package com.ttm.camera_component.ui
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.SurfaceHolder
+import android.view.SurfaceView
 import android.view.View
-import com.banketree.tt_camera_demo.R
-import com.bumptech.glide.Glide
-import kotlinx.android.synthetic.main.yuv_activity_preview.*
+import android.widget.ImageView
+import com.ttm.camera_component.widget.CameraButton
+import com.ttm.camera_component.R
+import kotlinx.android.synthetic.main.camera_activity_preview.*
 import java.io.File
 
 
 /**
- * Created by lxw
+ * @author banketree
+ * @time 2020/1/14 13:50
+ * @description
+ * 预览拍照 以及 录制的视频
+ * 自适应位置
  */
-class PreviewActivity : BaseActivity() {
-
+open class PreviewActivity : BaseActivity() {
     companion object {
         const val PARAMS_PATH = "path"
         const val PARAMS_FLAG_PICTURE = "flag.picture"
@@ -35,7 +42,7 @@ class PreviewActivity : BaseActivity() {
             return
         }
 
-        setContentView(R.layout.yuv_activity_preview)
+        setContentView(R.layout.camera_activity_preview)
         initView(path, flagPicture)
     }
 
@@ -43,6 +50,7 @@ class PreviewActivity : BaseActivity() {
         super.onDestroy()
         mediaPlayer?.stop()
         mediaPlayer?.release()
+        releaseImageViewResouce(preview_photo_img)
     }
 
     private fun getResultIntent(): Intent {
@@ -70,16 +78,39 @@ class PreviewActivity : BaseActivity() {
         }
 
         if (flagPicture) {
-            photoView.visibility = View.VISIBLE
-            Glide.with(this).load(path).into(photoView)
+            preview_photo_img.visibility = View.VISIBLE
+            previewPhoto(path, preview_photo_img)
         } else {
             preview_surfaceView.visibility = View.VISIBLE
-            playVideo(path)
+            playVideo(path, preview_surfaceView)
+        }
+    }
+
+    open fun previewPhoto(path: String, photoImg: ImageView) {
+        val options = BitmapFactory.Options()
+        options.inJustDecodeBounds = true
+        val bitmap = BitmapFactory.decodeFile(path, options)
+        bitmap?.recycle()
+        val sampleSize = 1080 / options.outWidth
+        options.inJustDecodeBounds = false
+        if (sampleSize > 1) {
+            options.inSampleSize = sampleSize
+        }
+        photoImg.setImageBitmap(BitmapFactory.decodeFile(path, options))
+    }
+
+    private fun releaseImageViewResouce(imageView: ImageView) {
+        val drawable = imageView.drawable
+        if (drawable != null && drawable is BitmapDrawable) {
+            drawable.bitmap.let {
+                if (!it.isRecycled)
+                    it.recycle()
+            }
         }
     }
 
     private var mediaPlayer: MediaPlayer? = null
-    fun playVideo(path: String) {
+    open fun playVideo(path: String, surfaceView: SurfaceView) {
         mediaPlayer?.stop()
         mediaPlayer?.release()
         //下面开始实例化MediaPlayer对象
@@ -96,7 +127,7 @@ class PreviewActivity : BaseActivity() {
             //只有当播放器准备好了之后才能够播放，所以播放的出发只能在触发了prepare之后
             it.setOnPreparedListener { _ ->
                 it.setOnVideoSizeChangedListener { _, width, height ->
-                    refreshPortraitScreen(width, height)
+                    refreshPortraitScreen(width, height, surfaceView)
                 }
 
                 Thread(Runnable {
@@ -108,7 +139,7 @@ class PreviewActivity : BaseActivity() {
                 向player中设置dispay，也就是SurfaceHolder。
                 但此时有可能SurfaceView还没有创建成功，所以需要监听SurfaceView的创建事件
              */
-            preview_surfaceView.holder.addCallback(object : SurfaceHolder.Callback {
+            surfaceView.holder.addCallback(object : SurfaceHolder.Callback {
                 override fun surfaceCreated(holder: SurfaceHolder) {
                     //将播放器和SurfaceView关联起来
                     it.setDisplay(holder)
@@ -131,11 +162,11 @@ class PreviewActivity : BaseActivity() {
     }
 
     //重新刷新 竖屏显示的大小  树屏显示以宽度为准
-    private fun refreshPortraitScreen(videoWidth: Int, videoHeight: Int) {
+    private fun refreshPortraitScreen(videoWidth: Int, videoHeight: Int, surfaceView: SurfaceView) {
         if (videoHeight == 0) return
-        val scale = (1.00f * videoHeight) / preview_surfaceView.measuredHeight
-        val lp = preview_surfaceView.layoutParams
-        lp.height = (scale * preview_surfaceView.measuredHeight).toInt()
-        preview_surfaceView.layoutParams = lp
+        val scale = (1.00f * videoHeight) / surfaceView.measuredHeight
+        val lp = surfaceView.layoutParams
+        lp.height = (scale * surfaceView.measuredHeight).toInt()
+        surfaceView.layoutParams = lp
     }
 }

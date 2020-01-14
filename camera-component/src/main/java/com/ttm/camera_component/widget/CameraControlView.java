@@ -1,4 +1,4 @@
-package com.banketree.tt_camera_demo.yuv;
+package com.ttm.camera_component.widget;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -15,6 +15,7 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
+import com.ttm.camera_component.listener.CameraControlListener;
 
 public class CameraControlView extends View {
     //空闲状态
@@ -70,10 +71,6 @@ public class CameraControlView extends View {
     private float progress;
     //录制视频最大时间长度
     private int duration;
-    //最短录制时间限制
-    private int min_duration;
-    //记录当前录制的时间
-    private int recorded_time;
 
     private RectF rectF;
     //长按后处理的逻辑Runnable
@@ -134,8 +131,6 @@ public class CameraControlView extends View {
         funType = FUN_TYPE_BOTH;
         //默认最长录制时间为10s
         duration = 10 * 1000;
-        //默认最短录制时间为1.5s
-        min_duration = 1500;
     }
 
     @Override
@@ -225,13 +220,8 @@ public class CameraControlView extends View {
     //录制结束
     private void recordEnd() {
         if (cameraControlListener != null) {
-            if (recorded_time < min_duration) {
-                //回调录制时间过短
-                cameraControlListener.onError("时间过短");
-            } else {
-                //回调录制结束
-                cameraControlListener.onEndRecordVideo();
-            }
+            //回调录制结束  如果录制时间过短 则是业务逻辑处理
+            cameraControlListener.onEndRecordVideo();
         }
         resetRecordAnim();  //重制按钮状态
     }
@@ -316,7 +306,6 @@ public class CameraControlView extends View {
 
     //更新进度条
     private void updateProgress(long millisUntilFinished) {
-        recorded_time = (int) (duration - millisUntilFinished);
         progress = 360f - millisUntilFinished / (float) duration * 360f;
         invalidate();
     }
@@ -361,16 +350,9 @@ public class CameraControlView extends View {
      * 设置最长录制时间
      */
     public void setDuration(int duration) {
-        this.duration = duration;
+        this.duration = duration * 1000;
         //录制定时器
         timer = new RecordCountDownTimer(duration, duration / 360);
-    }
-
-    /**
-     * 设置最短录制时间
-     */
-    public void setMinDuration(int duration) {
-        this.min_duration = duration;
     }
 
     /**

@@ -25,8 +25,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".yuv.CameraActivity"/>
-        <activity android:name=".yuv.PreviewActivity"/>
+        <activity android:name=".PreviewCameraActivity"/>
+        <activity android:name=".TakeCameraActivity"/>
     </application>
 
 </manifest>

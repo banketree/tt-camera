@@ -1,4 +1,4 @@
-package com.banketree.tt_camera_demo.yuv
+package com.ttm.camera_component.widget
 
 
 import android.annotation.TargetApi

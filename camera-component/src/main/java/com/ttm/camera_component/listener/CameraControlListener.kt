@@ -1,4 +1,4 @@
-package com.banketree.tt_camera_demo.yuv
+package com.ttm.camera_component.listener
 
 /**
  * @author banketree
@@ -21,9 +21,4 @@ interface CameraControlListener {
      * 结束录像
      * */
     fun onEndRecordVideo()
-
-    /**
-     * 出错提示
-     * */
-    fun onError(error: String)
 }
