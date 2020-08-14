@@ -75,6 +75,12 @@ abstract class CameraActivity : BaseActivity() {
     }
 
     private fun initView() {
+        if (isOnlyPicture()) {
+            cameraControlView.setFunType(CameraControlView.FUN_TYPE_ONLY_CAPTURE)
+        } else if (isOnlyVideo()) {
+            cameraControlView.setFunType(CameraControlView.FUN_TYPE_ONLY_RECORDER)
+        }
+
         initControlView()
         initPictrueCamera(cameraView, getSavedDir(false), cameraControlView)
         initMP4MuxerCamera(cameraView, getSavedDir(true), cameraControlView)
@@ -353,4 +359,8 @@ abstract class CameraActivity : BaseActivity() {
             Log.i("MMP4MuxerHandler", "---onStopRecordingFrame----")
         }
     }
+
+    protected open fun isOnlyPicture(): Boolean = false
+
+    protected open fun isOnlyVideo(): Boolean = false
 }

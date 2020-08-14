@@ -37,4 +37,6 @@ class TakeCameraActivity : CameraActivity() {
 
     //录制视频 持续时间 单位秒
     override fun getRecordVideoDuration(): Int = 60
+
+    override fun isOnlyPicture(): Boolean = true
 }
